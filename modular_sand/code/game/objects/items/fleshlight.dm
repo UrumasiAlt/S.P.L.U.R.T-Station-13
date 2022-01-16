@@ -49,11 +49,11 @@
 	update_appearance()
 	return TRUE
 
-/obj/item/fleshlight/attack(mob/living/carbon/human/M, mob/living/carbon/human/user)
+/obj/item/fleshlight/attack(mob/living/M, mob/living/user)
 	var/possessive_verb = user.p_their()
 	var/message = ""
 	var/lust_amt = 0
-	if(ishuman(M) && (M?.client?.prefs?.toggles & VERB_CONSENT))
+	if(isliving(M) && (M?.client?.prefs?.toggles & VERB_CONSENT))
 		switch(user.zone_selected)
 			if(BODY_ZONE_PRECISE_GROIN)
 				if(M.has_penis(REQUIRE_EXPOSED))
@@ -100,14 +100,14 @@
 	. = ..()
 	updatesleeve()
 
-/obj/item/portallight/attack(mob/living/carbon/human/M, mob/living/carbon/human/user)
+/obj/item/portallight/attack(mob/living/M, mob/living/user)
 	var/message = ""
 	var/lust_amt = 0
 	var/arouse_only_target = FALSE
 	var/obj/item/organ/genital/penis/P
 	var/obj/item/organ/genital/vagina/V
 	var/target
-	if(ishuman(M) && (M?.client?.prefs?.toggles & VERB_CONSENT) && useable) // I promise all those checks are worth it!
+	if(isliving(M) && (M?.client?.prefs?.toggles & VERB_CONSENT) && useable) // I promise all those checks are worth it!
 		switch(user.zone_selected)
 			if(BODY_ZONE_PRECISE_GROIN)
 				if(M.has_penis(REQUIRE_EXPOSED))
@@ -124,8 +124,12 @@
 			if(BODY_ZONE_R_ARM)
 				if(M.has_hand(REQUIRE_ANY))
 					var/can_interact = FALSE
-					for(var/obj/item/bodypart/r_arm/R in M.bodyparts)
-						can_interact = TRUE
+					if(iscarbon(M))
+						var/mob/living/carbon/C = M
+						for(var/obj/item/bodypart/r_arm/R in C.bodyparts)
+							can_interact = TRUE
+					else
+						can_interact = M.has_hands()
 					if(can_interact)
 						message = (user == M) ? pick("touches softly against [src]") : pick("forces [M]'s finger on [src]")
 						lust_amt = NORMAL_LUST
@@ -134,8 +138,12 @@
 			if(BODY_ZONE_L_ARM)
 				if(M.has_hand(REQUIRE_ANY))
 					var/can_interact = FALSE
-					for(var/obj/item/bodypart/l_arm/L in M.bodyparts)
-						can_interact = TRUE
+					if(iscarbon(M))
+						var/mob/living/carbon/C = M
+						for(var/obj/item/bodypart/l_arm/L in C.bodyparts)
+							can_interact = TRUE
+					else
+						can_interact = M.has_hands()
 					if(can_interact)
 						message = (user == M) ? pick("touches softly against [src]") : pick("forces [M]'s finger on [src]")
 						lust_amt = NORMAL_LUST

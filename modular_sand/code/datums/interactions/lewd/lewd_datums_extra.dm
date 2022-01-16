@@ -210,7 +210,7 @@
 	user_is_target = TRUE
 
 /datum/interaction/lewd/remove_self_equipment/display_interaction(mob/living/user)
-	if(!iscarbon(user))
+	if(!iscarbon(user) && !issilicon(user))
 		to_chat(user, "<span class='warning'>You don't seem like someone who'd use cock equipment my dude</span>")
 		return
 	user.remove_equipment(user)
@@ -225,7 +225,7 @@
 	write_log_target = "got their genital's equipment edited by"
 
 /datum/interaction/lewd/remove_other_equipment/display_interaction(mob/living/user, mob/living/target)
-	if(!iscarbon(target))
+	if(!iscarbon(target) && !issilicon(target))
 		to_chat(user, "<span class='warning'>[target.p_they()] don't look like someone who'd use balls equipment</span>")
 	user.remove_equipment(target)
 

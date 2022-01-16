@@ -321,14 +321,14 @@ Doesn't work on other aliens/AI.*/
 		to_chat(user, "<span class='noticealien'>You reveal yourself!</span>")
 
 
-/mob/living/carbon/proc/getPlasma()
+/mob/living/proc/getPlasma()
 	var/obj/item/organ/alien/plasmavessel/vessel = getorgan(/obj/item/organ/alien/plasmavessel)
 	if(!vessel)
 		return 0
 	return vessel.storedPlasma
 
 
-/mob/living/carbon/proc/adjustPlasma(amount)
+/mob/living/proc/adjustPlasma(amount)
 	var/obj/item/organ/alien/plasmavessel/vessel = getorgan(/obj/item/organ/alien/plasmavessel)
 	if(!vessel)
 		return 0
@@ -346,7 +346,7 @@ Doesn't work on other aliens/AI.*/
 	. = ..()
 	updatePlasmaDisplay()
 
-/mob/living/carbon/proc/usePlasma(amount)
+/mob/living/proc/usePlasma(amount)
 	if(getPlasma() >= amount)
 		adjustPlasma(-amount)
 		return 1

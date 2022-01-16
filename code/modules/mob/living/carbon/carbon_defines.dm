@@ -6,8 +6,11 @@
 	has_limbs = 1
 	held_items = list(null, null)
 	var/list/stomach_contents		= list()
+	// Moved to /mob/living, see modular_splurt/code/modules/mob/living/living_defines.dm
+	/*
 	var/list/internal_organs		= list()	//List of /obj/item/organ in the mob. They don't go in the contents for some reason I don't want to know.
 	var/list/internal_organs_slot= list() //Same as above, but stores "slot ID" - "organ" pairs for easy access.
+	*/
 	var/silent = FALSE 		//Can't talk. Value goes down every life proc. //NOTE TO FUTURE CODERS: DO NOT INITIALIZE NUMERICAL VARS AS NULL OR I WILL MURDER YOU.
 	var/dreaming = 0 //How many dream images we have left to send
 
@@ -28,7 +31,8 @@
 	var/obj/item/clothing/glasses/glasses = null //only used by humans.
 	var/obj/item/ears = null //only used by humans.
 
-	var/datum/dna/dna = null//Carbon
+	// Moved to /mob/living, see modular_splurt/code/modules/mob/living/living_defines.dm
+	// var/datum/dna/dna = null//Carbon
 	var/datum/mind/last_mind = null //last mind to control this mob, for blood-based cloning
 
 	var/failed_last_breath = 0 //This is used to determine if the mob failed a breath. If they did fail a brath, they will attempt to breathe each tick, otherwise just once per 4 ticks.

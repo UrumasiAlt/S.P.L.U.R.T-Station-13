@@ -16,6 +16,7 @@
 	command = "cheer"
 	description = "Cheer them on."
 	require_user_mouth = TRUE
+	require_physical_form = FALSE
 	simple_message = "USER cheers TARGET on!"
 
 /datum/interaction/highfive
@@ -37,6 +38,7 @@
 	command = "salute"
 	description = "Give them a firm salute!"
 	require_user_hands = TRUE
+	require_physical_form = FALSE
 	simple_message = "USER salutes TARGET sharply!"
 	max_distance = 25
 
@@ -58,6 +60,7 @@
 	command = "bird"
 	description = "Flip them the bird!"
 	require_user_hands = TRUE
+	require_physical_form = FALSE
 	simple_message = "USER gives TARGET the bird!"
 	max_distance = 25
 

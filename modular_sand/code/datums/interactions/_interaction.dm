@@ -36,6 +36,7 @@
 	var/require_target_mouth
 	var/require_target_hands
 	var/needs_physical_contact
+	var/require_physical_form = TRUE
 
 	var/user_is_target = FALSE //Boolean. Pretty self explanatory.
 
@@ -64,6 +65,12 @@
 		if(!silent)
 			to_chat(user, "<span class='warning'>You don't have hands.</span>")
 		return FALSE
+
+	if(require_physical_form)
+		if(isAI(user))
+			if(!silent)
+				to_chat(user, "<span class='warning'>You don't have a physical presence.</span>")
+			return FALSE
 
 	if(user.last_interaction_time < world.time)
 		return TRUE
@@ -96,6 +103,12 @@
 		if(!silent)
 			to_chat(user, "<span class = 'warning'>They don't have hands.</span>")
 		return FALSE
+
+	if(require_physical_form)
+		if(isAI(user))
+			if(!silent)
+				to_chat(user, "<span class = 'warning'>They don't have a physical presence.</span>")
+			return FALSE
 
 	return TRUE
 

@@ -53,7 +53,7 @@
 		update_link()
 
 //exposure and through-clothing code
-/mob/living/carbon
+/mob/living
 	var/list/exposed_genitals = list() //Keeping track of them so we don't have to iterate through every genitalia and see if exposed
 
 /obj/item/organ/genital/proc/is_exposed()
@@ -229,8 +229,12 @@
 		C.exposed_genitals -= src
 		UnregisterSignal(C, COMSIG_MOB_DEATH)
 
+/mob/living/proc/give_genitals(clean = FALSE)
+	return
+
 //proc to give a player their genitals and stuff when they log in
-/mob/living/carbon/human/proc/give_genitals(clean = FALSE)//clean will remove all pre-existing genitals. proc will then give them any genitals that are enabled in their DNA
+/mob/living/carbon/give_genitals(clean = FALSE)//clean will remove all pre-existing genitals. proc will then give them any genitals that are enabled in their DNA
+	. = ..()
 	if(clean)
 		for(var/obj/item/organ/genital/G in internal_organs)
 			qdel(G)
@@ -251,7 +255,11 @@
 	if(dna.features["has_belly"])
 		give_genital(/obj/item/organ/genital/belly)
 
-/mob/living/carbon/human/proc/give_genital(obj/item/organ/genital/G)
+
+/mob/living/proc/give_genital(obj/item/organ/genital/G)
+	return
+
+/mob/living/carbon/human/give_genital(obj/item/organ/genital/G)
 	if(!dna || (NOGENITALS in dna.species.species_traits) || getorganslot(initial(G.slot)))
 		return FALSE
 	G = new G(null, FALSE)
@@ -369,7 +377,11 @@
 
 
 //Checks to see if organs are new on the mob, and changes their colours so that they don't get crazy colours.
-/mob/living/carbon/human/proc/emergent_genital_call()
+/mob/living/proc/emergent_genital_call()
+	return
+
+/mob/living/carbon/emergent_genital_call()
+	. = ..()
 	if(!client.prefs.arousable)
 		return FALSE
 

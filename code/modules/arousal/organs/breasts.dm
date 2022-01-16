@@ -57,7 +57,7 @@
 	var/icon_shape = S ? S.icon_state : "pair"
 	var/icon_size = clamp(breast_values[size], BREASTS_ICON_MIN_SIZE, BREASTS_ICON_MAX_SIZE)
 	icon_state = "breasts_[icon_shape]_[icon_size]"
-	if(owner)
+	if(iscarbon(owner))
 		if(owner.dna.species.use_skintones && owner.dna.features["genitals_use_skintone"])
 			if(ishuman(owner)) // Check before recasting type, although someone fucked up if you're not human AND have use_skintones somehow...
 				var/mob/living/carbon/human/H = owner // only human mobs have skin_tone, which we need.
@@ -114,7 +114,10 @@
 		else if (rounded_cached < r_prev_size)
 			to_chat(H, "<span class='warning'>Your breasts [pick("shrink down to", "decrease into", "diminish into", "deflate into", "shrivel regretfully into", "contracts into")] a [uppertext(size)]-cup.</span>")
 
-/obj/item/organ/genital/breasts/get_features(mob/living/carbon/human/H)
+/obj/item/organ/genital/breasts/get_features(mob/living/L)
+	if(!ishuman(L))
+		return
+	var/mob/living/carbon/human/H = L
 	var/datum/dna/D = H.dna
 	if(D.species.use_skintones && D.features["genitals_use_skintone"])
 		color = SKINTONE2HEX(H.skin_tone)

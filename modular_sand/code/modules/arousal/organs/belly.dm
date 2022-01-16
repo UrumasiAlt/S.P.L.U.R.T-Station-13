@@ -78,7 +78,7 @@
 
 	var/icon_size = size
 	icon_state = "belly_[lowershape]_[icon_size]"
-	if(owner)
+	if(iscarbon(owner))
 		if(owner.dna.species.use_skintones && owner.dna.features["genitals_use_skintone"])
 			if(ishuman(owner)) // Check before recasting type, although someone fucked up if you're not human AND have use_skintones somehow...
 				var/mob/living/carbon/human/H = owner // only human mobs have skin_tone, which we need.
@@ -88,7 +88,10 @@
 		else
 			color = "#[owner.dna.features["belly_color"]]"
 
-/obj/item/organ/genital/belly/get_features(mob/living/carbon/human/H)
+/obj/item/organ/genital/belly/get_features(mob/living/L)
+	if(!ishuman(L))
+		return
+	var/mob/living/carbon/human/H = L
 	var/datum/dna/D = H.dna
 	if(D.species.use_skintones && D.features["genitals_use_skintone"])
 		color = SKINTONE2HEX(H.skin_tone)

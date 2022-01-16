@@ -12,3 +12,7 @@
 /datum/sprite_accessory/penis/thick
 	icon_state = "thick"
 	name = "Thick"
+
+/datum/sprite_accessory/penis/synth
+	icon_state = "synth" // No sprites right now
+	name = "Synthetic"

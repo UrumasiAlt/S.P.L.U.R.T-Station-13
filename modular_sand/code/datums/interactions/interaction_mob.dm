@@ -21,16 +21,8 @@
 		return TRUE
 	return FALSE
 
-/mob/living/mouth_is_free()
-	if(istype(src, /mob/living/carbon/human))
-		var/mob/living/carbon/human/H = src
-		return !H.wear_mask
-	else
-		return TRUE
+/mob/living/carbon/human/mouth_is_free()
+	return !wear_mask
 
-/mob/living/foot_is_free()
-	if(istype(src, /mob/living/carbon/human))
-		var/mob/living/carbon/human/H = src
-		return !H.shoes
-	else
-		return TRUE
+/mob/living/carbon/human/foot_is_free()
+	return !shoes

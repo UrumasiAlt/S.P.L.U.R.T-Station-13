@@ -164,13 +164,11 @@
 			)
 			peepee = null
 		else
-			if(ishuman(user))
-				var/mob/living/carbon/human/pardner = user
-				switch(fucktarget)
-					if("vagina")
-						peepee = pardner.getorganslot(ORGAN_SLOT_VAGINA)
-					if("penis")
-						peepee = pardner.getorganslot(ORGAN_SLOT_PENIS)
+			switch(fucktarget)
+				if("vagina")
+					peepee = user.getorganslot(ORGAN_SLOT_VAGINA)
+				if("penis")
+					peepee = user.getorganslot(ORGAN_SLOT_PENIS)
 		user.set_is_fucking(src, CUM_TARGET_MOUTH, peepee)
 
 	playlewdinteractionsound(get_turf(src), pick('modular_sand/sound/interactions/bj1.ogg',
@@ -337,7 +335,7 @@
 			to_chat(src, "<span class='warning'>[t_He] needs a sounding rod for that!<span>")
 */
 
-/mob/living/proc/remove_equipment(mob/living/carbon/target)
+/mob/living/proc/remove_equipment(mob/living/target)
 	var/obj/item/organ/genital/holder = pick_receiving_organ(target, HAS_EQUIPMENT, "Remove equipment", "What genital?")
 	if(!holder)
 		to_chat(src, "<span class='warning'> You need exposed genitals!</b>")

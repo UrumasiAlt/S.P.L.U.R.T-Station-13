@@ -1,6 +1,7 @@
 /mob/living
 	var/mb_cd_length = 5 SECONDS						//5 second cooldown for masturbating because fuck spam.
 	var/mb_cd_timer = 0									//The timer itself
+	var/arousal_rate = 1
 
 /mob/living/carbon/human
 	var/saved_underwear = ""//saves their underwear so it can be toggled later
@@ -9,7 +10,6 @@
 	var/hidden_underwear = FALSE
 	var/hidden_undershirt = FALSE
 	var/hidden_socks = FALSE
-	var/arousal_rate = 1
 
 //Mob procs
 /mob/living/carbon/human/verb/underwear_toggle()
@@ -41,7 +41,7 @@
 	update_body(TRUE)
 
 
-/mob/living/carbon/human/proc/adjust_arousal(strength, cause = "manual toggle", aphro = FALSE,maso = FALSE) // returns all genitals that were adjust
+/mob/living/proc/adjust_arousal(strength, cause = "manual toggle", aphro = FALSE,maso = FALSE) // returns all genitals that were adjust
 	var/list/obj/item/organ/genital/genit_list = list()
 	if(!client?.prefs.arousable || (aphro && (client?.prefs.cit_toggles & NO_APHRO)) || (maso && !HAS_TRAIT(src, TRAIT_MASO)))
 		return // no adjusting made here
@@ -55,16 +55,16 @@
 				genit_list += G
 	return genit_list
 
-/obj/item/organ/genital/proc/climaxable(mob/living/carbon/human/H, silent = FALSE) //returns the fluid source (ergo reagents holder) if found.
+/obj/item/organ/genital/proc/climaxable(mob/living/owner, silent = FALSE) //returns the fluid source (ergo reagents holder) if found.
 	if((genital_flags & GENITAL_FUID_PRODUCTION))
 		. = reagents
 	else
 		if(linked_organ)
 			. = linked_organ.reagents
 	if(!. && !silent)
-		to_chat(H, "<span class='warning'>Your [name] is unable to produce it's own fluids, it's missing the organs for it.</span>")
+		to_chat(owner, "<span class='warning'>Your [name] is unable to produce it's own fluids, it's missing the organs for it.</span>")
 
-/mob/living/carbon/human/proc/do_climax(datum/reagents/R, atom/target, obj/item/organ/genital/G, spill = TRUE)
+/mob/living/proc/do_climax(datum/reagents/R, atom/target, obj/item/organ/genital/G, spill = TRUE)
 	if(!G)
 		return
 	if(!target || !R)
@@ -93,7 +93,7 @@
 		newtonian_move(turn(dir, 180))
 	//
 
-/mob/living/carbon/human/proc/mob_climax_outside(obj/item/organ/genital/G, mb_time = 30) //This is used for forced orgasms and other hands-free climaxes
+/mob/living/proc/mob_climax_outside(obj/item/organ/genital/G, mb_time = 30) //This is used for forced orgasms and other hands-free climaxes
 	var/datum/reagents/fluid_source = G.climaxable(src, TRUE)
 	if(!fluid_source)
 		to_chat(src,"<span class='userdanger'>Your [G.name] cannot cum.</span>")
@@ -105,7 +105,7 @@
 	to_chat(src,"<span class='userlove'>You climax[isturf(loc) ? " onto [loc]" : ""] with your [G.name].</span>")
 	do_climax(fluid_source, loc, G)
 
-/mob/living/carbon/human/proc/mob_climax_partner(obj/item/organ/genital/G, mob/living/L, spillage = TRUE, mb_time = 30, obj/item/organ/genital/Lgen = null) //Used for climaxing with any living thing
+/mob/living/proc/mob_climax_partner(obj/item/organ/genital/G, mob/living/L, spillage = TRUE, mb_time = 30, obj/item/organ/genital/Lgen = null) //Used for climaxing with any living thing
 	var/datum/reagents/fluid_source = G.climaxable(src)
 	if(!fluid_source)
 		return
@@ -124,7 +124,7 @@
 	do_climax(fluid_source, spillage ? loc : L, G, spillage)
 	L.receive_climax(src, Lgen, G, spillage)
 
-/mob/living/carbon/human/proc/mob_fill_container(obj/item/organ/genital/G, obj/item/reagent_containers/container, mb_time = 30) //For beaker-filling, beware the bartender
+/mob/living/proc/mob_fill_container(obj/item/organ/genital/G, obj/item/reagent_containers/container, mb_time = 30) //For beaker-filling, beware the bartender
 	var/datum/reagents/fluid_source = G.climaxable(src)
 	if(!fluid_source)
 		return
@@ -136,7 +136,7 @@
 	message_admins("[src] used their [G.name] to fill [container].")
 	do_climax(fluid_source, container, G, FALSE, cover = TRUE)
 
-/mob/living/carbon/human/proc/pick_climax_genitals(silent = FALSE)
+/mob/living/proc/pick_climax_genitals(silent = FALSE)
 	var/list/genitals_list
 	var/list/worn_stuff = get_equipped_items()
 
@@ -149,7 +149,7 @@
 	else if(!silent)
 		to_chat(src, "<span class='warning'>You cannot climax without available genitals.</span>")
 
-/mob/living/carbon/human/proc/pick_partner(silent = FALSE)
+/mob/living/proc/pick_partner(silent = FALSE)
 	var/list/partners = list()
 	if(pulling)
 		partners += pulling
@@ -178,7 +178,7 @@
 			message_admins("[src] tried to climax with [target], but [target] did not consent.")
 			log_consent("[src] tried to climax with [target], but [target] did not consent.")
 
-/mob/living/carbon/human/proc/pick_climax_container(silent = FALSE)
+/mob/living/proc/pick_climax_container(silent = FALSE)
 	var/list/containers_list = list()
 
 	for(var/obj/item/reagent_containers/C in held_items)
@@ -195,7 +195,7 @@
 	else if(!silent)
 		to_chat(src, "<span class='warning'>You cannot do this without an appropriate container.</span>")
 
-/mob/living/carbon/human/proc/available_rosie_palms(silent = FALSE, list/whitelist_typepaths = list(/obj/item/dildo))
+/mob/living/proc/available_rosie_palms(silent = FALSE, list/whitelist_typepaths = list(/obj/item/dildo))
 	if(restrained(TRUE)) //TRUE ignores grabs
 		if(!silent)
 			to_chat(src, "<span class='warning'>You can't do that while restrained!</span>")
@@ -214,14 +214,15 @@
 
 //Here's the main proc itself
 //skyrat edit - forced partner and spillage
-/mob/living/carbon/human/proc/mob_climax(forced_climax=FALSE,cause = "", var/mob/living/forced_partner = null, var/forced_spillage = TRUE, var/obj/item/organ/genital/forced_receiving_genital = null) //Forced is instead of the other proc, makes you cum if you have the tools for it, ignoring restraints
+/mob/living/proc/mob_climax(forced_climax=FALSE,cause = "", var/mob/living/forced_partner = null, var/forced_spillage = TRUE, var/obj/item/organ/genital/forced_receiving_genital = null) //Forced is instead of the other proc, makes you cum if you have the tools for it, ignoring restraints
 	set waitfor = FALSE
 	if(mb_cd_timer > world.time)
 		if(!forced_climax) //Don't spam the message to the victim if forced to come too fast
 			to_chat(src, "<span class='warning'>You need to wait [DisplayTimeText((mb_cd_timer - world.time), TRUE)] before you can do that again!</span>")
 		return
 
-	if(!client?.prefs.arousable || !has_dna())
+	// Hm I sure wonder what the has_dna() check was for :clueless:
+	if(!client?.prefs.arousable/* || !has_dna()*/)
 		return
 	if(stat == DEAD)
 		if(!forced_climax)
@@ -320,7 +321,7 @@
 
 	mb_cd_timer = world.time + mb_cd_length
 
-/mob/living/carbon/human/verb/climax_verb()
+/mob/living/verb/climax_verb()
 	set category = "IC"
 	set name = "Climax"
 	set desc = "Lets you choose a couple ways to ejaculate."

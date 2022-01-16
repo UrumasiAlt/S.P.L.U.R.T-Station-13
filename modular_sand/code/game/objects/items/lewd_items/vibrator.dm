@@ -60,16 +60,14 @@ Code:
 				to_chat(user, "<span class='notice'>You twist the bottom of [src], setting it to the low setting.</span>")
 				return
 
-/obj/item/electropack/vibrator/attack(mob/living/carbon/C, mob/living/user)
+/obj/item/electropack/vibrator/attack(mob/living/target, mob/living/user)
 
 	var/obj/item/organ/genital/picked_organ
-	var/mob/living/carbon/human/S = user
-	var/mob/living/carbon/human/T = C
-	picked_organ = S.pick_receiving_organ(T, HAS_EQUIPMENT, "Vibrator", "Where are you putting it in?")
+	picked_organ = user.pick_receiving_organ(target, HAS_EQUIPMENT, "Vibrator", "Where are you putting it in?")
 	if(picked_organ)
-		C.visible_message("<span class='warning'><b>\The [user]</b> is trying to attach [src] to <b>\The [T]</b>!</span>",\
+		target.visible_message("<span class='warning'><b>\The [user]</b> is trying to attach [src] to <b>\The [target]</b>!</span>",\
 						"<span class='warning'><b>\The [user]</b> is trying to put [src] on you!</span>")
-		if(!do_mob(user, C, 5 SECONDS))//warn them and have a delay of 5 seconds to apply.
+		if(!do_mob(user, target, 5 SECONDS))//warn them and have a delay of 5 seconds to apply.
 			return
 
 		if(style == "long" && !(picked_organ.type == /obj/item/organ/genital/vagina)) //long vibrators dont fit on anything but vaginas, but small ones fit everywhere
@@ -78,16 +76,16 @@ Code:
 
 		if(!picked_organ.equipment[GENITAL_EQUIPMENT_VIBRATOR])
 			if(!(style == "long"))
-				to_chat(user, "<span class='love'>You attach [src] to <b>\The [T]</b>'s [picked_organ.name].</span>")
+				to_chat(user, "<span class='love'>You attach [src] to <b>\The [target]</b>'s [picked_organ.name].</span>")
 			else
-				to_chat(user, "<span class='love'>You insert [src] into <b>\The <b>[T]</b>'s [picked_organ.name].</span>")
+				to_chat(user, "<span class='love'>You insert [src] into <b>\The <b>[target]</b>'s [picked_organ.name].</span>")
 		else
 			to_chat(user, "<span class='notice'>They already have a [picked_organ.equipment[GENITAL_EQUIPMENT_VIBRATOR].name] there.</span>")
 			return
 
 		if(!user.transferItemToLoc(src, picked_organ)) //check if you can put it in
 			return
-		playsound(C, 'modular_sand/sound/lewd/champ_fingering.ogg', 50, 1, -1)
+		playsound(target, 'modular_sand/sound/lewd/champ_fingering.ogg', 50, 1, -1)
 		inside = TRUE
 		picked_organ.equipment[GENITAL_EQUIPMENT_VIBRATOR] = src
 		to_chat(user, "<span class='warning'>Done <b>Done</b></span>") //Will delete after testing
@@ -109,7 +107,7 @@ Code:
 		if(!istype(loc, /obj/item/organ/genital))
 			return
 		var/obj/item/organ/genital/G = loc
-		var/mob/living/carbon/U = G.owner
+		var/mob/living/U = G.owner
 
 		if(G)
 			switch(G.type) //just being fancy
@@ -118,9 +116,9 @@ Code:
 				else
 					to_chat(U, "<span class='love'>[src] vibrates against your [G.name]!</span>")
 
-			var/intencity = 6*mode
-			U.handle_post_sex(intencity, null, src) //give pleasure
-			playsound(U.loc, 'modular_sand/sound/lewd/vibrate.ogg', (intencity+5), 1, -1) //vibe intencity scaled up abit for sound
+			var/intensity = 6*mode
+			U.handle_post_sex(intensity, null, src) //give pleasure
+			playsound(U.loc, 'modular_sand/sound/lewd/vibrate.ogg', (intensity+5), 1, -1) //vibe intensity scaled up abit for sound
 
 
 			switch(mode)

@@ -513,13 +513,11 @@
 	var/u_S = p_s()
 	var/t_His = partner?.p_their()
 	var/cumin = FALSE
-	var/partner_carbon_check = FALSE
+	var/partner_compat_check = FALSE
 	var/obj/item/organ/genital/target_gen = null
-	var/mob/living/carbon/c_partner = null
-	//Carbon checks
-	if(iscarbon(partner))
-		c_partner = partner
-		partner_carbon_check = TRUE
+	// Compatible partner checks
+	if(isliving(partner))
+		partner_compat_check = TRUE
 
 	if(src != partner)
 		if(!last_genital)
@@ -541,8 +539,8 @@
 							message = "cums on \the <b>[partner]</b>'s face."
 					if(CUM_TARGET_VAGINA)
 						if(partner.has_vagina(REQUIRE_EXPOSED))
-							if(partner_carbon_check)
-								target_gen = c_partner.getorganslot(ORGAN_SLOT_VAGINA)
+							if(partner_compat_check)
+								target_gen = partner.getorganslot(ORGAN_SLOT_VAGINA)
 							message = "cums in \the <b>[partner]</b>'s pussy."
 							cumin = TRUE
 						else
@@ -566,8 +564,8 @@
 					if(CUM_TARGET_BELLY)
 						if(partner.has_belly(REQUIRE_EXPOSED))
 							message = "cums into the <b>[partner]</b>'s navel, [pick(list("making it into a massive pond of jizz", "[p_their()] spunk drooling out of it"))]."
-							if(partner_carbon_check)
-								target_gen = c_partner.getorganslot(ORGAN_SLOT_VAGINA)
+							if(partner_compat_check)
+								target_gen = partner.getorganslot(ORGAN_SLOT_VAGINA)
 						else
 							message = "cums on the <b>[partner]</b>'s midsection."
 					if(NUTS_TO_FACE)
@@ -653,8 +651,8 @@
 					if(CUM_TARGET_BELLY)
 						if(partner.has_belly(REQUIRE_EXPOSED))
 							message = "cums into the <b>[partner]</b>'s navel, [pick(list("making it into a massive pond of jizz", "[p_their()] spunk drooling out of it"))]."
-							if(partner_carbon_check)
-								target_gen = c_partner.getorganslot(ORGAN_SLOT_BELLY)
+							if(partner_compat_check)
+								target_gen = partner.getorganslot(ORGAN_SLOT_BELLY)
 						else
 							message = "cums on the <b>[partner]</b>'s midsection."
 					if(NUTS_TO_FACE)
@@ -699,169 +697,168 @@
 			else
 				message = pick("orgasms violently!", "twists in orgasm.")
 		else
-			switch(last_genital.type)
-				if(/obj/item/organ/genital/penis)
-					if(!istype(partner))
-						target_orifice = null
+			if(istype(last_genital, /obj/item/organ/genital/penis))
+				if(!istype(partner))
+					target_orifice = null
 
-					switch(target_orifice)
-						if(CUM_TARGET_MOUTH)
-							if(partner.has_mouth() && partner.mouth_is_free())
-								message = "cums right in \the <b>[partner]</b>'s mouth."
-								cumin = TRUE
-							else
-								message = "cums on \the <b>[partner]</b>'s face."
-						if(CUM_TARGET_THROAT)
-							if(partner.has_mouth() && partner.mouth_is_free())
-								message = "shoves deep into \the <b>[partner]</b>'s throat and cums."
-								cumin = TRUE
-							else
-								message = "cums on \the <b>[partner]</b>'s face."
-						if(CUM_TARGET_VAGINA)
-							if(partner.has_vagina(REQUIRE_EXPOSED))
-								if(partner_carbon_check)
-									target_gen = c_partner.getorganslot(ORGAN_SLOT_VAGINA)
-								message = "cums in \the <b>[partner]</b>'s pussy."
-								cumin = TRUE
-							else
-								message = "cums on \the <b>[partner]</b>'s belly."
-						if(CUM_TARGET_ANUS)
-							if(partner.has_anus(REQUIRE_EXPOSED))
-								message = "cums in \the <b>[partner]</b>'s asshole."
-								cumin = TRUE
-							else
-								message = "cums on \the <b>[partner]</b>'s backside."
-						if(CUM_TARGET_HAND)
-							if(partner.has_hand())
-								message = "cums in \the <b>[partner]</b>'s hand."
-							else
-								message = "cums on \the <b>[partner]</b>."
-						if(CUM_TARGET_BREASTS)
-							if(partner.is_topless() && partner.has_breasts())
-								message = "cums onto \the <b>[partner]</b>'s breasts."
-							else
-								message = "cums on \the <b>[partner]</b>'s chest and neck."
-						if(NUTS_TO_FACE)
-							if(partner.has_mouth() && partner.mouth_is_free())
-								message = "vigorously ruts [u_His] nutsack into \the <b>[partner]</b>'s mouth before shooting [u_His] thick, sticky jizz all over [t_His] eyes and hair."
-						if(THIGH_SMOTHERING)
-							if(has_penis()) //it already checks for the cock before, why the hell would you do this redundant shit
-								message = "keeps \the <b>[partner]</b> locked in [u_His] thighs as [u_His] cock throbs, dumping its heavy load all over [t_His] face."
-							else
-								message = "reaches [u_His] peak, locking [u_His] legs around \the <b>[partner]</b>'s head extra hard as [u_He] cum[u_S] straight onto the head stuck between [u_His] thighs"
+				switch(target_orifice)
+					if(CUM_TARGET_MOUTH)
+						if(partner.has_mouth() && partner.mouth_is_free())
+							message = "cums right in \the <b>[partner]</b>'s mouth."
 							cumin = TRUE
-						if(CUM_TARGET_FEET)
-							if(!last_lewd_datum || !last_lewd_datum.require_target_num_feet)
-								if(partner.has_feet())
-									message = "cums on \the <b>[partner]</b>'s [partner.has_feet() == 1 ? pick("foot", "sole") : pick("feet", "soles")]."
-								else
-									message = "cums on the floor!"
-							else
-								if(partner.has_feet())
-									message = "cums on \the <b>[partner]</b>'s [last_lewd_datum.require_target_feet == 1 ? pick("foot", "sole") : pick("feet", "soles")]."
-								else
-									message = "cums on the floor!"
-						//weird shit goes here
-						if(CUM_TARGET_EARS)
-							if(partner.has_ears())
-								message = "cums inside \the <b>[partner]</b>'s ear."
-							else
-								message = "cums inside \the <b>[partner]</b>'s earsocket."
+						else
+							message = "cums on \the <b>[partner]</b>'s face."
+					if(CUM_TARGET_THROAT)
+						if(partner.has_mouth() && partner.mouth_is_free())
+							message = "shoves deep into \the <b>[partner]</b>'s throat and cums."
 							cumin = TRUE
-						if(CUM_TARGET_EYES)
-							if(partner.has_eyes())
-								message = "cums on \the <b>[partner]</b>'s eyeball."
-							else
-								message = "cums inside \the <b>[partner]</b>'s eyesocket."
+						else
+							message = "cums on \the <b>[partner]</b>'s face."
+					if(CUM_TARGET_VAGINA)
+						if(partner.has_vagina(REQUIRE_EXPOSED))
+							if(partner_compat_check)
+								target_gen = partner.getorganslot(ORGAN_SLOT_VAGINA)
+							message = "cums in \the <b>[partner]</b>'s pussy."
 							cumin = TRUE
-						//
-						if(CUM_TARGET_PENIS)
-							if(partner.has_penis(REQUIRE_EXPOSED))
-								message = "cums on \the <b>[partner]</b>."
+						else
+							message = "cums on \the <b>[partner]</b>'s belly."
+					if(CUM_TARGET_ANUS)
+						if(partner.has_anus(REQUIRE_EXPOSED))
+							message = "cums in \the <b>[partner]</b>'s asshole."
+							cumin = TRUE
+						else
+							message = "cums on \the <b>[partner]</b>'s backside."
+					if(CUM_TARGET_HAND)
+						if(partner.has_hand())
+							message = "cums in \the <b>[partner]</b>'s hand."
+						else
+							message = "cums on \the <b>[partner]</b>."
+					if(CUM_TARGET_BREASTS)
+						if(partner.is_topless() && partner.has_breasts())
+							message = "cums onto \the <b>[partner]</b>'s breasts."
+						else
+							message = "cums on \the <b>[partner]</b>'s chest and neck."
+					if(NUTS_TO_FACE)
+						if(partner.has_mouth() && partner.mouth_is_free())
+							message = "vigorously ruts [u_His] nutsack into \the <b>[partner]</b>'s mouth before shooting [u_His] thick, sticky jizz all over [t_His] eyes and hair."
+					if(THIGH_SMOTHERING)
+						if(has_penis()) //it already checks for the cock before, why the hell would you do this redundant shit
+							message = "keeps \the <b>[partner]</b> locked in [u_His] thighs as [u_His] cock throbs, dumping its heavy load all over [t_His] face."
+						else
+							message = "reaches [u_His] peak, locking [u_His] legs around \the <b>[partner]</b>'s head extra hard as [u_He] cum[u_S] straight onto the head stuck between [u_His] thighs"
+						cumin = TRUE
+					if(CUM_TARGET_FEET)
+						if(!last_lewd_datum || !last_lewd_datum.require_target_num_feet)
+							if(partner.has_feet())
+								message = "cums on \the <b>[partner]</b>'s [partner.has_feet() == 1 ? pick("foot", "sole") : pick("feet", "soles")]."
 							else
 								message = "cums on the floor!"
 						else
+							if(partner.has_feet())
+								message = "cums on \the <b>[partner]</b>'s [last_lewd_datum.require_target_feet == 1 ? pick("foot", "sole") : pick("feet", "soles")]."
+							else
+								message = "cums on the floor!"
+					//weird shit goes here
+					if(CUM_TARGET_EARS)
+						if(partner.has_ears())
+							message = "cums inside \the <b>[partner]</b>'s ear."
+						else
+							message = "cums inside \the <b>[partner]</b>'s earsocket."
+						cumin = TRUE
+					if(CUM_TARGET_EYES)
+						if(partner.has_eyes())
+							message = "cums on \the <b>[partner]</b>'s eyeball."
+						else
+							message = "cums inside \the <b>[partner]</b>'s eyesocket."
+						cumin = TRUE
+					//
+					if(CUM_TARGET_PENIS)
+						if(partner.has_penis(REQUIRE_EXPOSED))
+							message = "cums on \the <b>[partner]</b>."
+						else
 							message = "cums on the floor!"
-				if(/obj/item/organ/genital/vagina)
-					if(!istype(partner))
-						target_orifice = null
+					else
+						message = "cums on the floor!"
+			else if(istype(last_genital, /obj/item/organ/genital/vagina))
+				if(!istype(partner))
+					target_orifice = null
 
-					switch(target_orifice)
-						if(CUM_TARGET_MOUTH)
-							if(partner.has_mouth() && partner.mouth_is_free())
-								message = "squirts right in \the <b>[partner]</b>'s mouth."
-								cumin = TRUE
-							else
-								message = "squirts on \the <b>[partner]</b>'s face."
-						if(CUM_TARGET_THROAT)
-							if(partner.has_mouth() && partner.mouth_is_free())
-								message = "rubs [u_His] vagina against \the <b>[partner]</b>'s mouth and cums."
-								cumin = TRUE
-							else
-								message = "squirts on \the <b>[partner]</b>'s face."
-						if(CUM_TARGET_VAGINA)
-							if(partner.has_vagina(REQUIRE_EXPOSED))
-								message = "squirts on \the <b>[partner]</b>'s pussy."
-								cumin = TRUE
-							else
-								message = "squirts on \the <b>[partner]</b>'s belly."
-						if(CUM_TARGET_ANUS)
-							if(partner.has_anus(REQUIRE_EXPOSED))
-								message = "squirts on \the <b>[partner]</b>'s asshole."
-								cumin = TRUE
-							else
-								message = "squirts on \the <b>[partner]</b>'s backside."
-						if(CUM_TARGET_HAND)
-							if(partner.has_hand())
-								message = "squirts on \the <b>[partner]</b>'s hand."
-							else
-								message = "squirts on \the <b>[partner]</b>."
-						if(CUM_TARGET_BREASTS)
-							if(partner.has_breasts(REQUIRE_EXPOSED))
-								message = "squirts onto \the <b>[partner]</b>'s breasts."
-							else
-								message = "squirts on \the <b>[partner]</b>'s chest and neck."
-						if(NUTS_TO_FACE)
-							if(partner.has_mouth() && partner.mouth_is_free())
-								message = "vigorously ruts [u_His] clit into \the <b>[partner]</b>'s mouth before shooting [u_His] femcum all over [t_His] eyes and hair."
-
-						if(THIGH_SMOTHERING)
-							message = "keeps \the <b>[partner]</b> locked in [u_His] thighs as [u_He] orgasm[u_S], squirting over [t_His] face."
-
-						if(CUM_TARGET_FEET)
-							if(!last_lewd_datum || !last_lewd_datum.require_target_num_feet)
-								if(partner.has_feet())
-									message = "squirts on \the <b>[partner]</b>'s [partner.has_feet() == 1 ? pick("foot", "sole") : pick("feet", "soles")]."
-								else
-									message = "squirts on the floor!"
-							else
-								if(partner.has_feet())
-									message = "squirts on \the <b>[partner]</b>'s [last_lewd_datum.require_target_feet == 1 ? pick("foot", "sole") : pick("feet", "soles")]."
-								else
-									message = "squirts on the floor!"
-						//weird shit goes here
-						if(CUM_TARGET_EARS)
-							if(partner.has_ears())
-								message = "squirts on \the <b>[partner]</b>'s ear."
-							else
-								message = "squirts on \the <b>[partner]</b>'s earsocket."
+				switch(target_orifice)
+					if(CUM_TARGET_MOUTH)
+						if(partner.has_mouth() && partner.mouth_is_free())
+							message = "squirts right in \the <b>[partner]</b>'s mouth."
 							cumin = TRUE
-						if(CUM_TARGET_EYES)
-							if(partner.has_eyes())
-								message = "squirts on \the <b>[partner]</b>'s eyeball."
-							else
-								message = "squirts on \the <b>[partner]</b>'s eyesocket."
+						else
+							message = "squirts on \the <b>[partner]</b>'s face."
+					if(CUM_TARGET_THROAT)
+						if(partner.has_mouth() && partner.mouth_is_free())
+							message = "rubs [u_His] vagina against \the <b>[partner]</b>'s mouth and cums."
 							cumin = TRUE
-						//
-						if(CUM_TARGET_PENIS)
-							if(partner.has_penis(REQUIRE_EXPOSED))
-								message = "squirts on \the <b>[partner]</b>'s penis"
+						else
+							message = "squirts on \the <b>[partner]</b>'s face."
+					if(CUM_TARGET_VAGINA)
+						if(partner.has_vagina(REQUIRE_EXPOSED))
+							message = "squirts on \the <b>[partner]</b>'s pussy."
+							cumin = TRUE
+						else
+							message = "squirts on \the <b>[partner]</b>'s belly."
+					if(CUM_TARGET_ANUS)
+						if(partner.has_anus(REQUIRE_EXPOSED))
+							message = "squirts on \the <b>[partner]</b>'s asshole."
+							cumin = TRUE
+						else
+							message = "squirts on \the <b>[partner]</b>'s backside."
+					if(CUM_TARGET_HAND)
+						if(partner.has_hand())
+							message = "squirts on \the <b>[partner]</b>'s hand."
+						else
+							message = "squirts on \the <b>[partner]</b>."
+					if(CUM_TARGET_BREASTS)
+						if(partner.has_breasts(REQUIRE_EXPOSED))
+							message = "squirts onto \the <b>[partner]</b>'s breasts."
+						else
+							message = "squirts on \the <b>[partner]</b>'s chest and neck."
+					if(NUTS_TO_FACE)
+						if(partner.has_mouth() && partner.mouth_is_free())
+							message = "vigorously ruts [u_His] clit into \the <b>[partner]</b>'s mouth before shooting [u_His] femcum all over [t_His] eyes and hair."
+
+					if(THIGH_SMOTHERING)
+						message = "keeps \the <b>[partner]</b> locked in [u_His] thighs as [u_He] orgasm[u_S], squirting over [t_His] face."
+
+					if(CUM_TARGET_FEET)
+						if(!last_lewd_datum || !last_lewd_datum.require_target_num_feet)
+							if(partner.has_feet())
+								message = "squirts on \the <b>[partner]</b>'s [partner.has_feet() == 1 ? pick("foot", "sole") : pick("feet", "soles")]."
 							else
 								message = "squirts on the floor!"
 						else
+							if(partner.has_feet())
+								message = "squirts on \the <b>[partner]</b>'s [last_lewd_datum.require_target_feet == 1 ? pick("foot", "sole") : pick("feet", "soles")]."
+							else
+								message = "squirts on the floor!"
+					//weird shit goes here
+					if(CUM_TARGET_EARS)
+						if(partner.has_ears())
+							message = "squirts on \the <b>[partner]</b>'s ear."
+						else
+							message = "squirts on \the <b>[partner]</b>'s earsocket."
+						cumin = TRUE
+					if(CUM_TARGET_EYES)
+						if(partner.has_eyes())
+							message = "squirts on \the <b>[partner]</b>'s eyeball."
+						else
+							message = "squirts on \the <b>[partner]</b>'s eyesocket."
+						cumin = TRUE
+					//
+					if(CUM_TARGET_PENIS)
+						if(partner.has_penis(REQUIRE_EXPOSED))
+							message = "squirts on \the <b>[partner]</b>'s penis"
+						else
 							message = "squirts on the floor!"
-				else
-					message = pick("orgasms violently!", "twists in orgasm.")
+					else
+						message = "squirts on the floor!"
+			else
+				message = pick("orgasms violently!", "twists in orgasm.")
 	else //todo: better self cum messages
 		message = "cums all over themselves!"
 	if(gender == MALE)
@@ -888,12 +885,10 @@
 		refractory_period = world.time + rand(300, 900) - get_sexual_potency()
 		// set_drugginess(rand(5, 10))
 	if(multiorgasms < get_sexual_potency())
-		if(ishuman(src))
-			var/mob/living/carbon/human/H = src
-			if(!partner)
-				H.mob_climax(TRUE, "masturbation", "none")
-			else
-				H.mob_climax(TRUE, "sex", partner, !cumin, target_gen)
+		if(!partner)
+			mob_climax(TRUE, "masturbation", "none")
+		else
+			mob_climax(TRUE, "sex", partner, !cumin, target_gen)
 	set_lust(0)
 	SEND_SIGNAL(src, COMSIG_MOB_CAME, target_orifice, partner)
 
@@ -1004,13 +999,11 @@
 			)
 			peepee = null
 		else
-			if(ishuman(partner))
-				var/mob/living/carbon/human/pardner = partner
-				switch(fucktarget)
-					if("vagina")
-						peepee = pardner.getorganslot(ORGAN_SLOT_VAGINA)
-					if("penis")
-						peepee = pardner.getorganslot(ORGAN_SLOT_PENIS)
+			switch(fucktarget)
+				if("vagina")
+					peepee = partner.getorganslot(ORGAN_SLOT_VAGINA)
+				if("penis")
+					peepee = partner.getorganslot(ORGAN_SLOT_PENIS)
 		partner.set_is_fucking(src, CUM_TARGET_MOUTH, peepee)
 
 	playlewdinteractionsound(get_turf(src), pick('modular_sand/sound/interactions/bj1.ogg',
@@ -1047,7 +1040,7 @@
 						"grips the back of \the <b>[partner]</b>'s head, forcing [t_Him] onto [u_His] pussy.",
 						"rolls [u_His] pussy against \the <b>[partner]</b>'s tongue.",
 						"slides \the <b>[partner]</b>'s mouth between [u_His] legs.",
-						"looks \the <b>[partner]</b>'s in the eyes as [u_His] pussy presses into a waiting tongue.",
+						"looks \the <b>[partner]</b> in the eyes as [u_His] pussy presses into a waiting tongue.",
 						"sways [u_His] hips, pushing [u_His] sex into \the <b>[partner]</b>'s face.",
 						)
 					if(partner.a_intent == INTENT_HARM)
@@ -1065,7 +1058,7 @@
 						"forces [u_His] cock down \the <b>[partner]</b>'s throat.",
 						"pushes in against \the <b>[partner]</b>'s tongue until a tight gagging sound comes.",
 						"grips \the <b>[partner]</b>'s hair and draws [t_Him] to the base of the cock.",
-						"looks \the <b>[partner]</b>'s in the eyes as [u_His] cock presses into a waiting tongue.",
+						"looks \the <b>[partner]</b> in the eyes as [u_His] cock presses into a waiting tongue.",
 						"rolls [u_His] hips hard, sinking into \the <b>[partner]</b>'s mouth.",
 						)
 					if(partner.a_intent == INTENT_HARM)
@@ -1082,7 +1075,7 @@
 				"feels \the <b>[partner]</b>'s face between bare legs.",
 				"pushes in against \the <b>[partner]</b>'s tongue.",
 				"grips \the <b>[partner]</b>'s hair, drawing [t_Him] into the strangely sexless spot between [u_His] legs.",
-				"looks \the <b>[partner]</b>'s in the eyes as [t_Hes] caught beneath two thighs.",
+				"looks \the <b>[partner]</b>	 in the eyes as [t_Hes] caught beneath two thighs.",
 				"rolls [u_His] hips hard against \the <b>[partner]</b>'s face.",
 				)
 			if(partner.a_intent == INTENT_HARM)
@@ -1110,13 +1103,11 @@
 		if(improv)
 			message = "shoves [u_His] crotch into \the <b>[partner]</b>'s face."
 		else
-			if(ishuman(partner))
-				var/mob/living/carbon/human/pardner = partner
-				switch(fucktarget)
-					if("vagina")
-						peepee = pardner.getorganslot(ORGAN_SLOT_VAGINA)
-					if("penis")
-						peepee = pardner.getorganslot(ORGAN_SLOT_PENIS)
+			switch(fucktarget)
+				if("vagina")
+					peepee = partner.getorganslot(ORGAN_SLOT_VAGINA)
+				if("penis")
+					peepee = partner.getorganslot(ORGAN_SLOT_PENIS)
 		set_is_fucking(partner , CUM_TARGET_MOUTH, peepee)
 
 	playlewdinteractionsound(loc, pick('modular_sand/sound/interactions/oral1.ogg',
@@ -1175,13 +1166,11 @@
 		if(improv)
 			message = "deviously locks [u_His] legs around \the <b>[partner]</b>'s head and smothers it in [u_His] thighs."
 		else
-			if(ishuman(partner))
-				var/mob/living/carbon/human/pardner = partner
-				switch(fucktarget)
-					if("vagina")
-						peepee = pardner.getorganslot(ORGAN_SLOT_VAGINA)
-					if("penis")
-						peepee = pardner.getorganslot(ORGAN_SLOT_PENIS)
+			switch(fucktarget)
+				if("vagina")
+					peepee = partner.getorganslot(ORGAN_SLOT_VAGINA)
+				if("penis")
+					peepee = partner.getorganslot(ORGAN_SLOT_PENIS)
 		set_is_fucking(partner , THIGH_SMOTHERING, peepee)
 
 	var/file = pick('modular_sand/sound/interactions/bj10.ogg',
@@ -1673,7 +1662,7 @@
 	var/u_His = p_their()
 
 	if(partner.is_fucking(src, CUM_TARGET_FEET))
-		message = "[pick("rubs \the <b>[partner]</b> clit with [u_His] [get_shoes() ? get_shoes(TRUE) : pick("foot", "sole")].",
+		message = "[pick("rubs \the <b>[partner]</b>'s clit with [u_His] [get_shoes() ? get_shoes(TRUE) : pick("foot", "sole")].",
 			"rubs [u_His] [get_shoes() ? get_shoes(TRUE) : pick("foot", "sole", "toes")] on \the <b>[partner]</b>'s coochie.",
 			"rubs [u_His] [get_shoes() ? get_shoes(TRUE) : pick("foot", "sole", "toes")] on \the <b>[partner]</b>'s vagina.",
 			"rubs [u_His] foot up and down on \the <b>[partner]</b>'s pussy.")]"
@@ -1764,9 +1753,9 @@
 
 	if(is_fucking(partner, CUM_TARGET_EYES))
 		message = "[pick(
-			"pounds into \the <b>[partner]</b>'s [has_eyes() ? "eye":"eyesocket"].",
+			"pounds into \the <b>[partner]</b>'s [partner.has_eyes() ? "eye":"eyesocket"].",
 			"shoves [u_His] dick deep into \the <b>[partner]</b>'s skull",
-			"thrusts in and out of \the <b>[partner]</b>'s [has_eyes() ? "eye":"eyesocket"].",
+			"thrusts in and out of \the <b>[partner]</b>'s [partner.has_eyes() ? "eye":"eyesocket"].",
 			"goes balls deep into \the <b>[partner]</b>'s cranium over and over again.")]"
 		var/client/cli = partner.client
 		var/mob/living/carbon/C = partner
@@ -1778,7 +1767,7 @@
 					C.adjustOrganLoss(ORGAN_SLOT_EYES,rand(3,7))
 					C.adjustOrganLoss(ORGAN_SLOT_BRAIN, rand(3,7))
 	else
-		message = "forcefully slides [u_His] cock inbetween \the <b>[partner]</b>'s [has_eyes() ? "eyelid":"eyesocket"]."
+		message = "forcefully slides [u_His] cock inbetween \the <b>[partner]</b>'s [partner.has_eyes() ? "eyelid":"eyesocket"]."
 		set_is_fucking(partner, CUM_TARGET_EYES, getorganslot(ORGAN_SLOT_PENIS) ? getorganslot(ORGAN_SLOT_PENIS) : null)
 
 	playlewdinteractionsound(loc, pick('modular_sand/sound/interactions/champ1.ogg',
@@ -1794,9 +1783,9 @@
 
 	if(is_fucking(partner, CUM_TARGET_EARS))
 		message = "[pick(
-			"pounds into \the <b>[partner]</b>'s [has_eyes() ? "ear":"earsocker"].",
+			"pounds into \the <b>[partner]</b>'s [partner.has_ears() ? "ear":"earsocket"].",
 			"shoves [u_His] dick deep into \the <b>[partner]</b>'s skull",
-			"thrusts in and out of \the <b>[partner]</b>'s [has_eyes() ? "ear":"eyesocket"].",
+			"thrusts in and out of \the <b>[partner]</b>'s [partner.has_ears() ? "ear":"earsocket"].",
 			"goes balls deep into \the <b>[partner]</b>'s cranium over and over again.")]"
 		var/client/cli = partner.client
 		var/mob/living/carbon/C = partner
@@ -1808,8 +1797,8 @@
 					C.adjustOrganLoss(ORGAN_SLOT_EARS, rand(3,7))
 					C.adjustOrganLoss(ORGAN_SLOT_BRAIN, rand(3,7))
 	else
-		message = "forcefully slides [u_His] cock inside \the <b>[partner]</b>'s [has_ears() ? "ear":"earsocket"]."
-		set_is_fucking(partner, CUM_TARGET_EARS, getorganslot(ORGAN_SLOT_PENIS) ? getorganslot(ORGAN_SLOT_PENIS) : null)
+		message = "forcefully slides [u_His] cock inside \the <b>[partner]</b>'s [partner.has_ears() ? "ear":"earsocket"]."
+		set_is_fucking(partner, CUM_TARGET_EARS, getorganslot(ORGAN_SLOT_PENIS) || null)
 
 	playlewdinteractionsound(loc, pick('modular_sand/sound/interactions/champ1.ogg',
 						'modular_sand/sound/interactions/champ2.ogg'), 50, 1, -1)

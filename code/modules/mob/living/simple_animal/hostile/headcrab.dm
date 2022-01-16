@@ -70,7 +70,9 @@
 
 /obj/item/organ/body_egg/changeling_egg/proc/Pop()
 	var/mob/living/carbon/monkey/M = new(owner)
-	owner.stomach_contents += M
+	if(iscarbon(owner))
+		var/mob/living/carbon/c_owner = owner
+		c_owner.stomach_contents += M
 
 	for(var/obj/item/organ/I in src)
 		I.Insert(M, 1)

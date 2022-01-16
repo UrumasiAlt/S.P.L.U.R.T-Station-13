@@ -1,9 +1,9 @@
-/mob/living/carbon/human/do_climax(datum/reagents/R, atom/target, obj/item/organ/genital/G, spill) //Now I know how to modularize it :D
+/mob/living/do_climax(datum/reagents/R, atom/target, obj/item/organ/genital/G, spill) //Now I know how to modularize it :D
 	. = ..()
 	set_lust(0)
 	SEND_SIGNAL(src, COMSIG_ADD_MOOD_EVENT, "orgasm", /datum/mood_event/orgasm)
 
-/mob/living/proc/pick_receiving_organ(mob/living/carbon/L, flag = CAN_CUM_INTO, title = "Climax", desc = "in what hole?")
+/mob/living/proc/pick_receiving_organ(mob/living/L, flag = CAN_CUM_INTO, title = "Climax", desc = "in what hole?")
 	if (!istype(L))
 		return
 	var/list/receivers_list
@@ -16,11 +16,11 @@
 		return ret_organ
 
 /mob/living/proc/receive_climax(mob/living/partner, obj/item/organ/genital/receiver = null, obj/item/organ/genital/source_gen, spill = TRUE)
-	if(!ishuman(src))
+	if(!isliving(src))
 		return
-	var/mob/living/carbon/human/h_self = src
-	var/mob/living/carbon/human/h_partner = null
-	if(ishuman(partner))
+	var/mob/living/h_self = src
+	var/mob/living/h_partner = null
+	if(isliving(partner))
 		h_partner = partner
 
 	if(istype(source_gen, /obj/item/organ/genital/penis))
@@ -43,7 +43,7 @@
 						if(B)
 							B.fluid_rate *= 2
 
-/mob/living/carbon/human/do_climax(datum/reagents/R, atom/target, obj/item/organ/genital/G, spill, cover = FALSE)
+/mob/living/do_climax(datum/reagents/R, atom/target, obj/item/organ/genital/G, spill, cover = FALSE)
 	if(!G)
 		return
 
@@ -59,7 +59,7 @@
 		target.add_cum_overlay()
 	. = ..()
 
-/mob/living/carbon/human/mob_fill_container(obj/item/organ/genital/G, obj/item/reagent_containers/container, mb_time, obj/item/milking_machine/M)
+/mob/living/mob_fill_container(obj/item/organ/genital/G, obj/item/reagent_containers/container, mb_time, obj/item/milking_machine/M)
 	if(!M)
 		return ..()
 
@@ -78,7 +78,7 @@
 								"<span class='userlove'>You feel a vacuum sucking on your [G.name] as you climax</span>")
 	do_climax(fluid_source, container, G, FALSE, cover = TRUE)
 
-/mob/living/carbon/human/proc/mob_climax_over(obj/item/organ/genital/G, mob/living/L, spillage = TRUE, mb_time = 30)
+/mob/living/proc/mob_climax_over(obj/item/organ/genital/G, mob/living/L, spillage = TRUE, mb_time = 30)
 	var/datum/reagents/fluid_source = G.climaxable(src)
 	if(!fluid_source)
 		return
